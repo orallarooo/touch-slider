@@ -1,94 +1,141 @@
-let count = 1;
-let customChange = false;
 
-const sliding = (x) => {
-      let left = `${-x*58}vw`;
-      let allSlide = document.querySelector('.slider').querySelectorAll('img');
-      let allDots = document.querySelector('.dots').querySelectorAll('div');
+  const arrowLeft = document.querySelector(".arrow-left");
+const arrowRight = document.querySelector(".arrow-right");
+const slides = document.querySelectorAll(".slider-image");
+const bottom = document.getElementById("bottom");
 
-      allSlide.forEach((element) => {
-            element.style.left = left;
-      })
+const slider = document.getElementById("slider");
 
-      allDots.forEach((dots) => {
-            dots.style.border = "unset";
-            dots.style.scale = "0.8";
-      })
+let currentSlideIndex = 0;
+const paginationCircles = [];
+let sliderWidth = slider.clientWidth;
 
-      allDots[x].style.transition = "0.6s"
-      allDots[x].style.scale = "1.5"
-      allDots[x].style.border = "1px solid #eeff5d"
-
+function updateSliderWidth() {
+  sliderWidth = slider.clientWidth;
 }
 
-// Slider 
+// Add resize event listener
+window.addEventListener("resize", updateSliderWidth);
 
-setInterval(()=> {
-      if(customChange != true) {
-            if(count==5) {
-                  sliding(0);
-                  count = 1;
-            }     else {
-                  sliding(count);
-                  count += 1;
-            }
-      }
-},8000)
-
-// Left 
-
-const leftSwipe = () => {
-      customChange = true;
-      setInterval(() => {customChange = false}, 2000);
-      if(count == 1) {
-            sliding(4);
-            count = 5;
-      } else {
-            count -= 1;
-            sliding(count - 1)
-      }
+function showSlide() {
+  slider.style.transform = `translateX(-${currentSlideIndex * sliderWidth}px)`;
 }
 
-// right 
+function changeSlide(slideIndex) {
+  removeActiveClass();
+  currentSlideIndex = slideIndex;
+  addActiveClass();
+  showSlide();
+}
 
-const rightSwipe = () => {
-      customChange = true;
-      setInterval(() => {customChange = false}, 2000);
-      if (count == 5) {
-            sliding(0);
-            count = 1;
-      } else {
-            sliding(count);
-            count += 1;
-      }
-} 
+function arrowRightSlide() {
+  let newSlideIndex = currentSlideIndex + 1;
+  if (newSlideIndex > slides.length - 1) {
+    newSlideIndex = 0;
+  }
+  changeSlide(newSlideIndex);
+}
 
-document.querySelector('.left').addEventListener('click', () => {return leftSwipe();});
-document.querySelector('.right').addEventListener('click', () => {return rightSwipe();});
+function arrowLeftSlide() {
+  let newSlideIndex = currentSlideIndex - 1;
+  if (newSlideIndex < 0) {
+    newSlideIndex = slides.length - 1;
+  }
+  changeSlide(newSlideIndex);
+}
 
-// document.querySelector('.slider').onpointerdown= (e) => {
-//       let initX = e.clientX;
-//       document.querySelector('.slider').onpointerup = (up) =>{
-//             let finalX = up.clientX;
-//             finalX - initX > 0 ? leftSwipe() : rightSwipe();
-//       }
-// }
 
-const slider = document.querySelector('.slider');
+
+// arrowRight.addEventListener("click", arrowRightSlide);
+// arrowLeft.addEventListener("click", arrowLeftSlide);
+
+arrowLeft.addEventListener("click", (e) => {
+  arrowLeftSlide();
+  e.stopPropagation();
+});
+
+arrowRight.addEventListener("click", (e) => {
+  arrowRightSlide();
+  e.stopPropagation();
+});
+
+
+
+function createPaginationCircle() {
+  const div = document.createElement("div");
+  div.className = "pagination-circle";
+  bottom.appendChild(div);
+  paginationCircles.push(div);
+}
+
+function addPagination() {
+  slides.forEach(createPaginationCircle);
+  paginationCircles[0].classList.add("active");
+
+  paginationCircles.forEach((circle, index) => {
+    circle.addEventListener("click", () => changeSlide(index));
+  });
+}
+
+function addActiveClass() {
+  paginationCircles[currentSlideIndex].classList.add("active");
+}
+
+function removeActiveClass() {
+  paginationCircles[currentSlideIndex].classList.remove("active");
+}
+
+addPagination();
+
+//  touch 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let initX;
+// Event listener for the slider container
 
-slider.addEventListener('pointerdown', (e) => {
+const frame = document.getElementById('frame');
+
+frame.addEventListener("pointerdown", (e) => {
+  // Check if the clicked element is the slider itself
+
   initX = e.clientX;
-
   // Add the pointerup listener to the document to catch events even if the pointer moves outside the slider
   document.addEventListener('pointerup', handlePointerUp);
 });
 
-function handlePointerUp(up) {        
+
+
+
+function handlePointerUp(up) {
   let finalX = up.clientX;
-  finalX - initX > 0 ? leftSwipe() : rightSwipe();
-  // Remove the pointerup listener after handling the event
-  document.removeEventListener('pointerup', handlePointerUp); 
+  finalX - initX > 0 ? arrowLeftSlide() : arrowRightSlide();
+  document.removeEventListener("pointerup", handlePointerUp);
 }
+
+
+
+
 
 
