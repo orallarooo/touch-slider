@@ -1,5 +1,4 @@
-
-  const arrowLeft = document.querySelector(".arrow-left");
+const arrowLeft = document.querySelector(".arrow-left");
 const arrowRight = document.querySelector(".arrow-right");
 const slides = document.querySelectorAll(".slider-image");
 const bottom = document.getElementById("bottom");
@@ -44,8 +43,6 @@ function arrowLeftSlide() {
   changeSlide(newSlideIndex);
 }
 
-
-
 // arrowRight.addEventListener("click", arrowRightSlide);
 // arrowLeft.addEventListener("click", arrowLeftSlide);
 
@@ -58,8 +55,6 @@ arrowRight.addEventListener("click", (e) => {
   arrowRightSlide();
   e.stopPropagation();
 });
-
-
 
 function createPaginationCircle() {
   const div = document.createElement("div");
@@ -89,29 +84,6 @@ addPagination();
 
 //  touch 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 let initX;
 // Event listener for the slider container
 
@@ -125,15 +97,21 @@ frame.addEventListener("pointerdown", (e) => {
   document.addEventListener('pointerup', handlePointerUp);
 });
 
-
-
-
 function handlePointerUp(up) {
   let finalX = up.clientX;
   finalX - initX > 0 ? arrowLeftSlide() : arrowRightSlide();
   document.removeEventListener("pointerup", handlePointerUp);
 }
 
+// hotkey 
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowRight") {
+    arrowRightSlide();
+  } else if (event.key === "ArrowLeft") {
+    arrowLeftSlide();
+  }
+});
 
 
 
