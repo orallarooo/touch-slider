@@ -43,9 +43,6 @@ function arrowLeftSlide() {
   changeSlide(newSlideIndex);
 }
 
-// arrowRight.addEventListener("click", arrowRightSlide);
-// arrowLeft.addEventListener("click", arrowLeftSlide);
-
 arrowLeft.addEventListener("click", (e) => {
   arrowLeftSlide();
   e.stopPropagation();
